@@ -79,6 +79,49 @@
 			//迭代器:迭代函数 函数环境 函数参数
 			//生成一个可以应用到容器中每一个元素的回调函数，并返回你想要的结果
 			   cb=function(value,context,argCount){
+			   //没有参数时，返回一个能返回参数本身的函数
+			   if(value == null)return _.identify;
+			   //value为函数时，返回一个在context作用域下接收argCount个参数，并执行value函数
+			   if(_.isFunction(value)) return optimizeCb(value,context,argCount);
+			   //value为对象时，返回一个函数，检测是否包含value
+			   if(_.isObject(value))return _.matcher(value);//_.matcher=_.matches
+			   //其他情况，返回一个函数，该含糊返回参数obj中value属性的值
+			   return _.property(value);
+			};
+			_.iteratee=function(value,context){
+				return cb(value,context,Infinity);
+			}
+			//内部函数
+			var cerateAssigner=function(keysFunc,undefinedOnly){
+				return function(obj){
+						var len=arguments.length;
+						if(len<2||obj==null) return obj;
+
+				};
+
+			}
+			//一个空函数，用于构造函数的载体
+			var Ctor=function(){};
+	//知识点：返回一个以property为原型的构造函数的实例；扩展了Object.create()
+			var baseCerate=function(property]){
+				if(!_.isObject(property))return {};
+				if(nativeCreate) return nativeCreate(property);
+				Ctor.prototype=property;
+				var result=new Ctor;
+				Ctor.prototype=null;
+				return result;
+			}
+	//数组方法
+			//1.forEach:
+			_.each=_.forEach=function(obj,iteratee,context){
+				iteratee=optimize(iteratee,context);
+				var i,len;
+				if(isArray(obj)){}
+			}
+	//知识点：判断是不是一个数组
+			_.isArray=nativeIsArray||function(obj){
+				//Object.prototype.toString.call(arr)=>"[object Array]"
+				return toString.call(obj)==='[object Array]';
 
 			};
 	//知识点：判断obj是不是一个对象（非空），函数也是对象
@@ -134,7 +177,7 @@
 		//闭包 返回一个函数 该函数返回参数obj中key属性的值
 		_.property=function(key){
 			return function(obj){
-				return obj[key];
+				return obj==null?null:obj[key];
 			}
 		}
 
